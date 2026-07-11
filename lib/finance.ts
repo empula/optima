@@ -1,7 +1,27 @@
 import type { Subscription } from "./types";
 
+function monthsElapsed(createdAt: string): number {
+  const start = new Date(createdAt);
+  const now = new Date();
+  return (
+    (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth())
+  );
+}
+
+// null when the subscription isn't an installment plan.
+export function installmentsRemaining(sub: Subscription): number | null {
+  if (sub.cycle !== "installment" || !sub.installmentMonths) return null;
+  return Math.max(0, sub.installmentMonths - monthsElapsed(sub.createdAt));
+}
+
+export function isInstallmentFinished(sub: Subscription): boolean {
+  return installmentsRemaining(sub) === 0;
+}
+
 export function monthlyPrice(sub: Subscription): number {
-  return sub.cycle === "yearly" ? sub.price / 12 : sub.price;
+  if (sub.cycle === "yearly") return sub.price / 12;
+  if (sub.cycle === "installment" && isInstallmentFinished(sub)) return 0;
+  return sub.price;
 }
 
 export function monthlyTotal(subs: Subscription[]): number {

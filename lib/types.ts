@@ -1,4 +1,4 @@
-export type BillingCycle = "monthly" | "yearly";
+export type BillingCycle = "monthly" | "yearly" | "installment";
 
 export interface Subscription {
   id: string;
@@ -6,6 +6,8 @@ export interface Subscription {
   price: number;
   cycle: BillingCycle;
   paymentMethod?: string;
+  installmentMonths?: number;
+  createdAt: string; // ISO date string, used to compute remaining installments
 }
 
 export interface FocusSession {

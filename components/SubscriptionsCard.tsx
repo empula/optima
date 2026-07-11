@@ -1,12 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import type { Subscription } from "@/lib/types";
-import { monthlyPrice, monthlyTotal, groupByPaymentMethod, formatCurrency } from "@/lib/finance";
+import type { Subscription, BillingCycle } from "@/lib/types";
+import {
+  monthlyPrice,
+  monthlyTotal,
+  groupByPaymentMethod,
+  installmentsRemaining,
+  isInstallmentFinished,
+  formatCurrency,
+} from "@/lib/finance";
 
 interface Props {
   subscriptions: Subscription[];
-  onAdd: (sub: Omit<Subscription, "id">) => void;
+  onAdd: (sub: Omit<Subscription, "id" | "createdAt">) => void;
   onRemove: (id: string) => void;
 }
 
@@ -14,7 +21,8 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [cycle, setCycle] = useState<"monthly" | "yearly">("monthly");
+  const [cycle, setCycle] = useState<BillingCycle>("monthly");
+  const [installmentMonths, setInstallmentMonths] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
 
   const total = monthlyTotal(subscriptions);
@@ -25,16 +33,21 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
     const parsedPrice = Number(price);
     if (!name.trim() || !parsedPrice || parsedPrice <= 0) return;
 
+    const parsedMonths = Number(installmentMonths);
+    if (cycle === "installment" && (!parsedMonths || parsedMonths <= 0)) return;
+
     onAdd({
       name: name.trim(),
       price: parsedPrice,
       cycle,
       paymentMethod: paymentMethod.trim() || undefined,
+      installmentMonths: cycle === "installment" ? parsedMonths : undefined,
     });
 
     setName("");
     setPrice("");
     setCycle("monthly");
+    setInstallmentMonths("");
     setPaymentMethod("");
     setShowForm(false);
   }
@@ -81,13 +94,25 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
             />
             <select
               value={cycle}
-              onChange={(e) => setCycle(e.target.value as "monthly" | "yearly")}
+              onChange={(e) => setCycle(e.target.value as BillingCycle)}
               className="bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--input-border-focus)]"
             >
               <option value="monthly">Aylık</option>
               <option value="yearly">Yıllık</option>
+              <option value="installment">Taksit</option>
             </select>
           </div>
+          {cycle === "installment" && (
+            <input
+              value={installmentMonths}
+              onChange={(e) => setInstallmentMonths(e.target.value)}
+              type="number"
+              min="1"
+              step="1"
+              placeholder="Kaç ay taksit? (örn. 12)"
+              className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg px-3 py-2 text-sm placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[var(--input-border-focus)]"
+            />
+          )}
           <input
             value={paymentMethod}
             onChange={(e) => setPaymentMethod(e.target.value)}
@@ -105,29 +130,42 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
 
       {subscriptions.length > 0 && (
         <div className="mt-4 text-xs text-[var(--text-muted)] space-y-2 border-t border-[var(--card-border)] pt-3">
-          {subscriptions.map((sub) => (
-            <div key={sub.id} className="flex justify-between items-start">
-              <div>
-                <div className="text-[var(--text-primary)]">{sub.name}</div>
-                {sub.paymentMethod && (
-                  <div className="text-[var(--text-faint)] mt-0.5">{sub.paymentMethod}</div>
-                )}
+          {subscriptions.map((sub) => {
+            const remaining = installmentsRemaining(sub);
+            const finished = isInstallmentFinished(sub);
+            return (
+              <div key={sub.id} className="flex justify-between items-start">
+                <div>
+                  <div className="text-[var(--text-primary)]">{sub.name}</div>
+                  {sub.paymentMethod && (
+                    <div className="text-[var(--text-faint)] mt-0.5">{sub.paymentMethod}</div>
+                  )}
+                  {remaining !== null && (
+                    <div className="text-[var(--text-faint)] mt-0.5">
+                      {finished
+                        ? "Tamamlandı"
+                        : `Taksit: ${sub.installmentMonths! - remaining}/${sub.installmentMonths} ay`}
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 pt-px">
+                  <span className={finished ? "text-[var(--text-faint)] line-through" : undefined}>
+                    {formatCurrency(monthlyPrice(sub) || sub.price)} TL
+                    {sub.cycle === "yearly" && (
+                      <span className="text-[var(--text-faint)]">/ay</span>
+                    )}
+                  </span>
+                  <button
+                    onClick={() => onRemove(sub.id)}
+                    aria-label={`${sub.name} aboneliğini sil`}
+                    className="text-[var(--text-faint)] hover:text-[var(--danger)] transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2 pt-px">
-                <span>
-                  {formatCurrency(monthlyPrice(sub))} TL
-                  {sub.cycle === "yearly" && <span className="text-[var(--text-faint)]">/ay</span>}
-                </span>
-                <button
-                  onClick={() => onRemove(sub.id)}
-                  aria-label={`${sub.name} aboneliğini sil`}
-                  className="text-[var(--text-faint)] hover:text-[var(--danger)] transition-colors"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

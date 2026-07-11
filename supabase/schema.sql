@@ -6,8 +6,9 @@ create table if not exists public.subscriptions (
   user_id uuid not null references auth.users (id) on delete cascade,
   name text not null,
   price numeric not null check (price > 0),
-  cycle text not null check (cycle in ('monthly', 'yearly')),
+  cycle text not null check (cycle in ('monthly', 'yearly', 'installment')),
   payment_method text,
+  installment_months integer,
   created_at timestamptz not null default now()
 );
 
