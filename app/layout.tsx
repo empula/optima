@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tally – Finans & Odak",
-  description: "Aboneliklerini takip et, odaklanma sürene sahip çık.",
+  title: "Tally – Finans",
+  description: "Giderlerini ve net gelirini tek ekranda gör.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

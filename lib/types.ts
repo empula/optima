@@ -9,9 +9,3 @@ export interface Subscription {
   installmentMonths?: number;
   createdAt: string; // ISO date string, used to compute remaining installments
 }
-
-export interface FocusSession {
-  id: string;
-  minutes: number;
-  completedAt: string; // ISO date string
-}

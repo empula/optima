@@ -55,7 +55,7 @@ export default function Login() {
           <div className="text-center space-y-2 mb-2">
             <h1 className="text-2xl font-semibold tracking-tight">Tally</h1>
             <p className="text-sm text-[var(--text-muted)] max-w-xs mx-auto">
-              Aboneliklerinin ne kadar tuttuğunu gör, kısa seanslarla odaklanma sürene sahip çık.
+              Giderlerini gir, gelirinden düşsün, cebinde ne kaldığını tek ekranda gör.
             </p>
           </div>
 
@@ -65,15 +65,15 @@ export default function Login() {
                 💳
               </span>
               <p className="text-sm text-[var(--text-muted)] text-left">
-                Aboneliklerini ekle, aylık ne kadar gittiğini tek ekranda gör
+                Abonelik, taksit ve giderlerini ekle, aylık ne kadar gittiğini tek ekranda gör
               </p>
             </div>
             <div className="flex items-start gap-3">
               <span className="text-base leading-none mt-0.5" aria-hidden="true">
-                ⏱️
+                💰
               </span>
               <p className="text-sm text-[var(--text-muted)] text-left">
-                25 dakikalık odaklanma seanslarıyla zamanına sahip çık
+                Aylık net gelirini gir, giderler düşüldükten sonra ne kaldığını gör
               </p>
             </div>
           </div>

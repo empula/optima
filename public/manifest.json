@@ -1,7 +1,7 @@
 {
-  "name": "Tally – Finans & Odak",
+  "name": "Tally – Finans",
   "short_name": "Tally",
-  "description": "Aboneliklerini takip et, odaklanma sürene sahip çık.",
+  "description": "Giderlerini ve net gelirini tek ekranda gör.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",

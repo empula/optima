@@ -1,13 +1,13 @@
-import type { Subscription, FocusSession } from "@/lib/types";
+import type { Subscription } from "@/lib/types";
 import { getInsight } from "@/lib/insight";
 
 interface Props {
   subscriptions: Subscription[];
-  sessions: FocusSession[];
+  income: number;
 }
 
-export default function InsightCard({ subscriptions, sessions }: Props) {
-  const message = getInsight(subscriptions, sessions);
+export default function InsightCard({ subscriptions, income }: Props) {
+  const message = getInsight(subscriptions, income);
 
   return (
     <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-4 flex items-start space-x-3">

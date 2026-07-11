@@ -2,13 +2,11 @@
 
 import { useAuth } from "@/lib/useAuth";
 import { useSubscriptions } from "@/lib/useSubscriptions";
-import { useFocusSessions } from "@/lib/useFocusSessions";
 import { useMonthlyIncome } from "@/lib/useMonthlyIncome";
 import { monthlyTotal } from "@/lib/finance";
 import { signOut } from "@/lib/auth";
 import NetIncomeCard from "@/components/NetIncomeCard";
 import SubscriptionsCard from "@/components/SubscriptionsCard";
-import FocusCard from "@/components/FocusCard";
 import InsightCard from "@/components/InsightCard";
 import ThemeToggle from "@/components/ThemeToggle";
 import Clock from "@/components/Clock";
@@ -35,7 +33,6 @@ export default function Page() {
 
 function Dashboard({ userId, userEmail }: { userId: string; userEmail: string }) {
   const { subscriptions, addSubscription, removeSubscription } = useSubscriptions(userId);
-  const { sessions, addSession } = useFocusSessions(userId);
   const { income, updateIncome } = useMonthlyIncome(userId);
 
   return (
@@ -85,9 +82,7 @@ function Dashboard({ userId, userEmail }: { userId: string; userEmail: string })
           onRemove={removeSubscription}
         />
 
-        <FocusCard sessions={sessions} onComplete={addSession} />
-
-        <InsightCard subscriptions={subscriptions} sessions={sessions} />
+        <InsightCard subscriptions={subscriptions} income={income} />
       </main>
 
       <Footer />
