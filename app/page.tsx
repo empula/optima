@@ -40,7 +40,7 @@ function Dashboard({ userId, userEmail }: { userId: string; userEmail: string })
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full border-2 border-[var(--accent)]" />
             <span className="text-sm font-semibold tracking-tight text-[var(--text-primary)]">
-              Optima
+              Tally
             </span>
           </div>
           <h1 className="text-xl font-medium tracking-tight text-[var(--text-muted)] mt-1">

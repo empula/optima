@@ -13,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Optima – Finans & Odak",
+  title: "Tally – Finans & Odak",
   description: "Aboneliklerini takip et, odaklanma sürene sahip çık.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Optima",
+    title: "Tally",
   },
   icons: {
     icon: "/icons/icon-192.png",
@@ -38,7 +38,7 @@ export const viewport: Viewport = {
 const THEME_INIT_SCRIPT = `
 (function () {
   try {
-    var stored = localStorage.getItem("optima:theme");
+    var stored = localStorage.getItem("tally:theme");
     var theme = stored === "light" || stored === "dark" ? stored : "dark";
     document.documentElement.classList.toggle("dark", theme === "dark");
   } catch (e) {

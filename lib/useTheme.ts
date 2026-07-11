@@ -4,7 +4,7 @@ import { useCallback, useSyncExternalStore } from "react";
 
 export type Theme = "light" | "dark";
 
-const STORAGE_KEY = "optima:theme";
+const STORAGE_KEY = "tally:theme";
 const listeners = new Set<() => void>();
 
 function getSnapshot(): Theme {

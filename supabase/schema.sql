@@ -1,4 +1,4 @@
--- Optima veritabani semasi.
+-- Tally veritabani semasi.
 -- Supabase Dashboard > SQL Editor icine yapistirip "Run" ile calistir.
 
 create table if not exists public.subscriptions (

@@ -31,14 +31,14 @@ export default function Login() {
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full border-2 border-[var(--accent)]" />
           <span className="text-sm font-semibold tracking-tight text-[var(--text-primary)]">
-            Optima
+            Tally
           </span>
         </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="max-w-sm text-center space-y-2">
             <p className="text-lg font-medium">E-postanı kontrol et</p>
             <p className="text-sm text-[var(--text-muted)]">
-              {email} adresine bir giriş linki gönderdik. Linke tıklayınca Optima&apos;ya giriş
+              {email} adresine bir giriş linki gönderdik. Linke tıklayınca Tally&apos;ye giriş
               yapmış olacaksın.
             </p>
           </div>
@@ -53,13 +53,13 @@ export default function Login() {
       <div className="flex items-center gap-1.5">
         <span className="w-2.5 h-2.5 rounded-full border-2 border-[var(--accent)]" />
         <span className="text-sm font-semibold tracking-tight text-[var(--text-primary)]">
-          Optima
+          Tally
         </span>
       </div>
       <div className="flex-1 flex items-center justify-center">
         <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
           <div className="text-center space-y-1 mb-2">
-            <h1 className="text-2xl font-semibold tracking-tight">Optima</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">Tally</h1>
             <p className="text-sm text-[var(--text-muted)]">Devam etmek için e-postanı gir</p>
           </div>
           <input
