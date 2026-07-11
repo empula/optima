@@ -9,7 +9,7 @@ const FOCUS_SECONDS = FOCUS_MINUTES * 60;
 
 interface Props {
   sessions: FocusSession[];
-  onComplete: (session: FocusSession) => void;
+  onComplete: (session: Omit<FocusSession, "id">) => void;
 }
 
 function formatTime(totalSeconds: number): string {
@@ -34,7 +34,6 @@ export default function FocusCard({ sessions, onComplete }: Props) {
           clearInterval(intervalRef.current!);
           setRunning(false);
           onComplete({
-            id: crypto.randomUUID(),
             minutes: FOCUS_MINUTES,
             completedAt: new Date().toISOString(),
           });

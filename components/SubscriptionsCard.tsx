@@ -6,7 +6,7 @@ import { monthlyPrice, monthlyTotal, groupByPaymentMethod, formatCurrency } from
 
 interface Props {
   subscriptions: Subscription[];
-  onAdd: (sub: Subscription) => void;
+  onAdd: (sub: Omit<Subscription, "id">) => void;
   onRemove: (id: string) => void;
 }
 
@@ -26,7 +26,6 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
     if (!name.trim() || !parsedPrice || parsedPrice <= 0) return;
 
     onAdd({
-      id: crypto.randomUUID(),
       name: name.trim(),
       price: parsedPrice,
       cycle,
