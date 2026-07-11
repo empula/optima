@@ -11,6 +11,15 @@ export async function sendMagicLink(email: string) {
   if (error) throw error;
 }
 
+export async function signInWithGoogle() {
+  const redirectTo = typeof window !== "undefined" ? window.location.origin : undefined;
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo },
+  });
+  if (error) throw error;
+}
+
 export async function signOut() {
   await supabase.auth.signOut();
 }
