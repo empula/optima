@@ -24,12 +24,14 @@ create index if not exists focus_sessions_user_id_idx on public.focus_sessions (
 alter table public.subscriptions enable row level security;
 alter table public.focus_sessions enable row level security;
 
+drop policy if exists "Users manage their own subscriptions" on public.subscriptions;
 create policy "Users manage their own subscriptions"
   on public.subscriptions
   for all
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users manage their own focus sessions" on public.focus_sessions;
 create policy "Users manage their own focus sessions"
   on public.focus_sessions
   for all
