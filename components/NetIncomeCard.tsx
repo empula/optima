@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { formatCurrency } from "@/lib/finance";
+import FormattedNumberInput from "@/components/FormattedNumberInput";
 
 interface Props {
   income: number;
@@ -17,6 +18,7 @@ export default function NetIncomeCard({ income, expenses, onUpdateIncome }: Prop
 
   const net = income - expenses;
   const hasIncome = income > 0;
+  const isNegative = hasIncome && net < 0;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -42,7 +44,11 @@ export default function NetIncomeCard({ income, expenses, onUpdateIncome }: Prop
       </p>
 
       <div className="flex items-baseline justify-between mt-2">
-        <h2 className="text-3xl font-semibold tracking-tight">
+        <h2
+          className={`text-3xl font-semibold tracking-tight ${
+            isNegative ? "text-[var(--danger)]" : ""
+          }`}
+        >
           {hasIncome ? (
             <>
               {formatCurrency(net)} <span className="text-lg text-[var(--text-muted)]">TL</span>
@@ -63,13 +69,10 @@ export default function NetIncomeCard({ income, expenses, onUpdateIncome }: Prop
 
       {editing ? (
         <form onSubmit={handleSubmit} className="mt-4 space-y-2 border-t border-[var(--card-border)] pt-3">
-          <input
+          <FormattedNumberInput
             autoFocus
             value={value}
-            onChange={(e) => setValue(e.target.value)}
-            type="number"
-            min="0"
-            step="0.01"
+            onChange={setValue}
             placeholder="Aylık net gelirin"
             className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg px-3 py-2 text-sm placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[var(--input-border-focus)]"
           />

@@ -10,6 +10,7 @@ import {
   isInstallmentFinished,
   formatCurrency,
 } from "@/lib/finance";
+import FormattedNumberInput from "@/components/FormattedNumberInput";
 
 interface Props {
   subscriptions: Subscription[];
@@ -96,12 +97,9 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
             className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg px-3 py-2 text-sm placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[var(--input-border-focus)]"
           />
           <div className="flex gap-2">
-            <input
+            <FormattedNumberInput
               value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              type="number"
-              min="0"
-              step="0.01"
+              onChange={setPrice}
               placeholder={cycle === "installment" ? "Toplam tutar" : "Fiyat"}
               className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg px-3 py-2 text-sm placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[var(--input-border-focus)]"
             />
