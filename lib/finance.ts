@@ -1,21 +1,26 @@
 import type { Subscription } from "./types";
 
-function monthsElapsed(createdAt: string): number {
+function monthsBetween(createdAt: string, at: Date): number {
   const start = new Date(createdAt);
-  const now = new Date();
-  return (
-    (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth())
-  );
+  return (at.getFullYear() - start.getFullYear()) * 12 + (at.getMonth() - start.getMonth());
 }
 
 // null when the subscription isn't an installment plan.
-export function installmentsRemaining(sub: Subscription): number | null {
+export function installmentsRemainingAt(sub: Subscription, at: Date): number | null {
   if (sub.cycle !== "installment" || !sub.installmentMonths) return null;
-  return Math.max(0, sub.installmentMonths - monthsElapsed(sub.createdAt));
+  return Math.max(0, sub.installmentMonths - monthsBetween(sub.createdAt, at));
+}
+
+export function installmentsRemaining(sub: Subscription): number | null {
+  return installmentsRemainingAt(sub, new Date());
+}
+
+export function isInstallmentFinishedAt(sub: Subscription, at: Date): boolean {
+  return installmentsRemainingAt(sub, at) === 0;
 }
 
 export function isInstallmentFinished(sub: Subscription): boolean {
-  return installmentsRemaining(sub) === 0;
+  return isInstallmentFinishedAt(sub, new Date());
 }
 
 // The nominal monthly rate, regardless of whether an installment plan has finished.
@@ -26,13 +31,21 @@ export function nominalMonthlyPrice(sub: Subscription): number {
   return sub.price;
 }
 
-export function monthlyPrice(sub: Subscription): number {
-  if (sub.cycle === "installment" && isInstallmentFinished(sub)) return 0;
+export function monthlyPriceAt(sub: Subscription, at: Date): number {
+  if (sub.cycle === "installment" && isInstallmentFinishedAt(sub, at)) return 0;
   return nominalMonthlyPrice(sub);
 }
 
+export function monthlyPrice(sub: Subscription): number {
+  return monthlyPriceAt(sub, new Date());
+}
+
+export function monthlyTotalAt(subs: Subscription[], at: Date): number {
+  return subs.reduce((sum, sub) => sum + monthlyPriceAt(sub, at), 0);
+}
+
 export function monthlyTotal(subs: Subscription[]): number {
-  return subs.reduce((sum, sub) => sum + monthlyPrice(sub), 0);
+  return monthlyTotalAt(subs, new Date());
 }
 
 export interface PaymentMethodTotal {

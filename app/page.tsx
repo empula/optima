@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useAuth } from "@/lib/useAuth";
 import { useSubscriptions } from "@/lib/useSubscriptions";
 import { useMonthlyIncome } from "@/lib/useMonthlyIncome";
@@ -12,6 +13,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import Clock from "@/components/Clock";
 import Login from "@/components/Login";
 import Footer from "@/components/Footer";
+import ProjectionModal from "@/components/ProjectionModal";
 
 export default function Page() {
   const { user, loading } = useAuth();
@@ -34,6 +36,7 @@ export default function Page() {
 function Dashboard({ userId, userEmail }: { userId: string; userEmail: string }) {
   const { subscriptions, addSubscription, removeSubscription } = useSubscriptions(userId);
   const { income, updateIncome } = useMonthlyIncome(userId);
+  const [showProjection, setShowProjection] = useState(false);
 
   return (
     <div className="min-h-screen bg-[var(--app-bg)] text-[var(--text-primary)] p-6 font-sans transition-colors">
@@ -53,6 +56,16 @@ function Dashboard({ userId, userEmail }: { userId: string; userEmail: string })
         <div className="flex flex-col items-end gap-2">
           <Clock />
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowProjection(true)}
+              aria-label="Gelecek ay tahmini"
+              className="w-9 h-9 flex items-center justify-center rounded-full border border-[var(--card-border)] bg-[var(--card-bg)] text-[var(--text-muted)] hover:border-[var(--card-border-hover)] transition-colors"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path d="M16 2v4M8 2v4M3 10h18" />
+              </svg>
+            </button>
             <ThemeToggle />
             <button
               onClick={() => signOut()}
@@ -86,6 +99,14 @@ function Dashboard({ userId, userEmail }: { userId: string; userEmail: string })
       </main>
 
       <Footer />
+
+      {showProjection && (
+        <ProjectionModal
+          subscriptions={subscriptions}
+          income={income}
+          onClose={() => setShowProjection(false)}
+        />
+      )}
     </div>
   );
 }
