@@ -9,6 +9,7 @@ import FocusCard from "@/components/FocusCard";
 import InsightCard from "@/components/InsightCard";
 import ThemeToggle from "@/components/ThemeToggle";
 import Login from "@/components/Login";
+import Footer from "@/components/Footer";
 
 export default function Page() {
   const { user, loading } = useAuth();
@@ -36,7 +37,12 @@ function Dashboard({ userId, userEmail }: { userId: string; userEmail: string })
     <div className="min-h-screen bg-[var(--app-bg)] text-[var(--text-primary)] p-6 font-sans transition-colors">
       <header className="max-w-md mx-auto mb-8 pt-4 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-medium tracking-tight text-[var(--text-muted)]">Özet</h1>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--text-faint)]">
+            Anıl Kalafat
+          </p>
+          <h1 className="text-xl font-medium tracking-tight text-[var(--text-muted)] mt-1">
+            Özet
+          </h1>
           <p className="text-xs text-[var(--text-faint)] mt-0.5">{userEmail}</p>
         </div>
         <div className="flex items-center gap-2">
@@ -66,6 +72,8 @@ function Dashboard({ userId, userEmail }: { userId: string; userEmail: string })
 
         <InsightCard subscriptions={subscriptions} sessions={sessions} />
       </main>
+
+      <Footer />
     </div>
   );
 }
