@@ -58,8 +58,8 @@ export default function FocusCard({ sessions, onComplete }: Props) {
   const minutesToday = todayMinutes(sessions);
 
   return (
-    <div className="bg-[#121212] border border-[#222222] rounded-2xl p-5 hover:border-[#333333] transition-all">
-      <p className="text-xs font-medium text-[#888888] uppercase tracking-wider">
+    <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 hover:border-[var(--card-border-hover)] transition-colors">
+      <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
         Odaklanma Modu
       </p>
       <div className="flex items-center justify-between mt-3">
@@ -67,21 +67,23 @@ export default function FocusCard({ sessions, onComplete }: Props) {
           <h2 className="text-4xl font-mono font-medium tracking-tight">
             {formatTime(secondsLeft)}
           </h2>
-          <p className="text-xs text-[#888888] mt-1">Bugün: {minutesToday} dk odaklanıldı</p>
+          <p className="text-xs text-[var(--text-muted)] mt-1">
+            Bugün: {minutesToday} dk odaklanıldı
+          </p>
         </div>
         <div className="flex gap-2">
           {secondsLeft !== FOCUS_SECONDS && (
             <button
               onClick={reset}
               aria-label="Sıfırla"
-              className="bg-[#1d1d1f] border border-[#333333] text-[#888888] w-11 h-11 rounded-xl text-sm hover:bg-[#222222]"
+              className="bg-[var(--input-bg)] border border-[var(--card-border-hover)] text-[var(--text-muted)] w-11 h-11 rounded-xl text-sm hover:border-[var(--text-faint)]"
             >
               ↺
             </button>
           )}
           <button
             onClick={() => setRunning((r) => !r)}
-            className="bg-[#1d1d1f] border border-[#333333] text-[#ededed] px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-[#222222]"
+            className="bg-[var(--input-bg)] border border-[var(--card-border-hover)] text-[var(--text-primary)] px-4 py-2.5 rounded-xl text-sm font-medium hover:border-[var(--text-faint)]"
           >
             {running ? "Duraklat" : "Başlat"}
           </button>

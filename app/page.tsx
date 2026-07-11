@@ -5,6 +5,7 @@ import type { Subscription, FocusSession } from "@/lib/types";
 import SubscriptionsCard from "@/components/SubscriptionsCard";
 import FocusCard from "@/components/FocusCard";
 import InsightCard from "@/components/InsightCard";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Dashboard() {
   const [subscriptions, setSubscriptions] = useLocalStorage<Subscription[]>(
@@ -17,9 +18,10 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#060606] text-[#ededed] p-6 font-sans">
-      <header className="max-w-md mx-auto mb-8 pt-4">
-        <h1 className="text-xl font-medium tracking-tight text-[#888888]">Özet</h1>
+    <div className="min-h-screen bg-[var(--app-bg)] text-[var(--text-primary)] p-6 font-sans transition-colors">
+      <header className="max-w-md mx-auto mb-8 pt-4 flex items-center justify-between">
+        <h1 className="text-xl font-medium tracking-tight text-[var(--text-muted)]">Özet</h1>
+        <ThemeToggle />
       </header>
 
       <main className="max-w-md mx-auto space-y-4">

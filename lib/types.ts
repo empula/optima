@@ -5,6 +5,7 @@ export interface Subscription {
   name: string;
   price: number;
   cycle: BillingCycle;
+  paymentMethod?: string;
 }
 
 export interface FocusSession {

@@ -1,5 +1,5 @@
 import type { Subscription, FocusSession } from "./types";
-import { monthlyTotal, formatCurrency } from "./finance";
+import { monthlyTotal, groupByPaymentMethod, formatCurrency } from "./finance";
 import { todayMinutes } from "./focus";
 
 // Simple rule-based tips — no external AI call needed for the MVP.
@@ -11,12 +11,18 @@ export function getInsight(subs: Subscription[], sessions: FocusSession[]): stri
     return "Başlamak için bir abonelik ekle ya da ilk odaklanma seansını başlat.";
   }
 
-  if (subs.length >= 2 && minutes === 0) {
-    return `Aylık ${formatCurrency(total)} TL abonelik ödüyorsun ama bugün hiç odaklanmadın. Kısa bir seansla başlasan?`;
-  }
-
   if (subs.length === 0 && minutes > 0) {
     return "Aboneliklerini eklersen aylık ne kadar harcadığını da tek ekranda görebilirsin.";
+  }
+
+  const topMethod = groupByPaymentMethod(subs)[0];
+  const methodCount = subs.filter((s) => s.paymentMethod?.trim() === topMethod?.method).length;
+  if (topMethod && methodCount >= 2) {
+    return `"${topMethod.method}" üzerinden ${methodCount} abonelik ödüyorsun, aylık toplam ${formatCurrency(topMethod.total)} TL. Hepsini gerçekten kullanıyor musun?`;
+  }
+
+  if (subs.length >= 2 && minutes === 0) {
+    return `Aylık ${formatCurrency(total)} TL abonelik ödüyorsun ama bugün hiç odaklanmadın. Kısa bir seansla başlasan?`;
   }
 
   const expensive = [...subs].sort((a, b) => b.price - a.price)[0];
