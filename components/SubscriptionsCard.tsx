@@ -13,7 +13,7 @@ import {
 
 interface Props {
   subscriptions: Subscription[];
-  onAdd: (sub: Omit<Subscription, "id" | "createdAt">) => void;
+  onAdd: (sub: Omit<Subscription, "id" | "createdAt">) => Promise<void>;
   onRemove: (id: string) => void;
 }
 
@@ -24,11 +24,13 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
   const [installmentMonths, setInstallmentMonths] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const total = monthlyTotal(subscriptions);
   const byPaymentMethod = groupByPaymentMethod(subscriptions);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const parsedPrice = Number(price);
     if (!name.trim() || !parsedPrice || parsedPrice <= 0) return;
@@ -36,20 +38,28 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
     const parsedMonths = Number(installmentMonths);
     if (cycle === "installment" && (!parsedMonths || parsedMonths <= 0)) return;
 
-    onAdd({
-      name: name.trim(),
-      price: parsedPrice,
-      cycle,
-      paymentMethod: paymentMethod.trim() || undefined,
-      installmentMonths: cycle === "installment" ? parsedMonths : undefined,
-    });
+    setSaving(true);
+    setErrorMessage("");
+    try {
+      await onAdd({
+        name: name.trim(),
+        price: parsedPrice,
+        cycle,
+        paymentMethod: paymentMethod.trim() || undefined,
+        installmentMonths: cycle === "installment" ? parsedMonths : undefined,
+      });
 
-    setName("");
-    setPrice("");
-    setCycle("monthly");
-    setInstallmentMonths("");
-    setPaymentMethod("");
-    setShowForm(false);
+      setName("");
+      setPrice("");
+      setCycle("monthly");
+      setInstallmentMonths("");
+      setPaymentMethod("");
+      setShowForm(false);
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Kaydedilemedi, tekrar dener misin?");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -121,10 +131,14 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
           />
           <button
             type="submit"
-            className="w-full bg-[var(--cta-bg)] text-[var(--cta-text)] rounded-lg py-2 text-sm font-medium hover:opacity-90"
+            disabled={saving}
+            className="w-full bg-[var(--cta-bg)] text-[var(--cta-text)] rounded-lg py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50"
           >
-            Kaydet
+            {saving ? "Kaydediliyor..." : "Kaydet"}
           </button>
+          {errorMessage && (
+            <p className="text-sm text-[var(--danger)] text-center">{errorMessage}</p>
+          )}
         </form>
       )}
 

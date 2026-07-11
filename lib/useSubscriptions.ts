@@ -66,7 +66,8 @@ export function useSubscriptions(userId: string) {
         .select(SUBSCRIPTION_COLUMNS)
         .single();
 
-      if (!error && data) setSubscriptions((prev) => [...prev, fromRow(data)]);
+      if (error) throw error;
+      if (data) setSubscriptions((prev) => [...prev, fromRow(data)]);
     },
     [userId]
   );
