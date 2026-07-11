@@ -7,6 +7,7 @@ import { useMonthlyIncome } from "@/lib/useMonthlyIncome";
 import { monthlyTotal } from "@/lib/finance";
 import { signOut } from "@/lib/auth";
 import NetIncomeCard from "@/components/NetIncomeCard";
+import PaymentReminder from "@/components/PaymentReminder";
 import SubscriptionsCard from "@/components/SubscriptionsCard";
 import FocusCard from "@/components/FocusCard";
 import InsightCard from "@/components/InsightCard";
@@ -73,6 +74,8 @@ function Dashboard({ userId, userEmail }: { userId: string; userEmail: string })
       </header>
 
       <main className="max-w-md mx-auto space-y-4">
+        <PaymentReminder subscriptions={subscriptions} />
+
         <NetIncomeCard
           income={income}
           expenses={monthlyTotal(subscriptions)}
