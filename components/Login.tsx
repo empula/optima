@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { sendMagicLink, signInWithGoogle } from "@/lib/auth";
+import { signInWithGoogle } from "@/lib/auth";
 import Footer from "@/components/Footer";
-
-type Status = "idle" | "sending" | "sent" | "error";
 
 function GoogleIcon() {
   return (
@@ -30,55 +28,18 @@ function GoogleIcon() {
 }
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<Status>("idle");
+  const [signingIn, setSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.trim()) return;
-
-    setStatus("sending");
-    try {
-      await sendMagicLink(email.trim());
-      setStatus("sent");
-    } catch (err) {
-      setStatus("error");
-      setErrorMessage(err instanceof Error ? err.message : "Bir şeyler ters gitti.");
-    }
-  }
-
   async function handleGoogleSignIn() {
-    setStatus("sending");
+    setSigningIn(true);
+    setErrorMessage("");
     try {
       await signInWithGoogle();
     } catch (err) {
-      setStatus("error");
+      setSigningIn(false);
       setErrorMessage(err instanceof Error ? err.message : "Bir şeyler ters gitti.");
     }
-  }
-
-  if (status === "sent") {
-    return (
-      <div className="min-h-screen flex flex-col bg-[var(--app-bg)] text-[var(--text-primary)] p-6">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full border-2 border-[var(--accent)]" />
-          <span className="text-sm font-semibold tracking-tight text-[var(--text-primary)]">
-            Tally
-          </span>
-        </div>
-        <div className="flex-1 flex items-center justify-center">
-          <div className="max-w-sm text-center space-y-2">
-            <p className="text-lg font-medium">E-postanı kontrol et</p>
-            <p className="text-sm text-[var(--text-muted)]">
-              {email} adresine bir giriş linki gönderdik. Linke tıklayınca Tally&apos;ye giriş
-              yapmış olacaksın.
-            </p>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
   }
 
   return (
@@ -90,7 +51,7 @@ export default function Login() {
         </span>
       </div>
       <div className="flex-1 flex items-center justify-center">
-        <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
+        <div className="w-full max-w-sm space-y-4">
           <div className="text-center space-y-2 mb-2">
             <h1 className="text-2xl font-semibold tracking-tight">Tally</h1>
             <p className="text-sm text-[var(--text-muted)] max-w-xs mx-auto">
@@ -120,42 +81,16 @@ export default function Login() {
           <button
             type="button"
             onClick={handleGoogleSignIn}
-            disabled={status === "sending"}
+            disabled={signingIn}
             className="w-full flex items-center justify-center gap-2 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg py-2.5 text-sm font-medium hover:border-[var(--input-border-focus)] disabled:opacity-50"
           >
             <GoogleIcon />
-            Google ile devam et
+            {signingIn ? "Yönlendiriliyor..." : "Google ile devam et"}
           </button>
-
-          <div className="flex items-center gap-3 text-xs text-[var(--text-faint)]">
-            <div className="flex-1 h-px bg-[var(--card-border)]" />
-            veya
-            <div className="flex-1 h-px bg-[var(--card-border)]" />
-          </div>
-
-          <p className="text-sm text-[var(--text-muted)] text-center">
-            Devam etmek için e-postanı gir
-          </p>
-          <input
-            type="email"
-            required
-            autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="ornek@eposta.com"
-            className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg px-3 py-2.5 text-sm placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[var(--input-border-focus)]"
-          />
-          <button
-            type="submit"
-            disabled={status === "sending"}
-            className="w-full bg-[var(--cta-bg)] text-[var(--cta-text)] rounded-lg py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-50"
-          >
-            {status === "sending" ? "Gönderiliyor..." : "Giriş linki gönder"}
-          </button>
-          {status === "error" && (
+          {errorMessage && (
             <p className="text-sm text-[var(--danger)] text-center">{errorMessage}</p>
           )}
-        </form>
+        </div>
       </div>
       <Footer />
     </div>
