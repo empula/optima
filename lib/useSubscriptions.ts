@@ -72,10 +72,34 @@ export function useSubscriptions(userId: string) {
     [userId]
   );
 
+  const updateSubscription = useCallback(
+    async (id: string, sub: Omit<Subscription, "id" | "createdAt">) => {
+      const { data, error } = await supabase
+        .from("subscriptions")
+        .update({
+          name: sub.name,
+          price: sub.price,
+          cycle: sub.cycle,
+          payment_method: sub.paymentMethod ?? null,
+          installment_months: sub.installmentMonths ?? null,
+        })
+        .eq("id", id)
+        .select(SUBSCRIPTION_COLUMNS)
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        const updated = fromRow(data);
+        setSubscriptions((prev) => prev.map((s) => (s.id === id ? updated : s)));
+      }
+    },
+    []
+  );
+
   const removeSubscription = useCallback(async (id: string) => {
     setSubscriptions((prev) => prev.filter((s) => s.id !== id));
     await supabase.from("subscriptions").delete().eq("id", id);
   }, []);
 
-  return { subscriptions, loading, addSubscription, removeSubscription };
+  return { subscriptions, loading, addSubscription, updateSubscription, removeSubscription };
 }

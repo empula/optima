@@ -34,7 +34,8 @@ export default function Page() {
 }
 
 function Dashboard({ userId, userEmail }: { userId: string; userEmail: string }) {
-  const { subscriptions, addSubscription, removeSubscription } = useSubscriptions(userId);
+  const { subscriptions, addSubscription, updateSubscription, removeSubscription } =
+    useSubscriptions(userId);
   const { income, updateIncome } = useMonthlyIncome(userId);
   const [showProjection, setShowProjection] = useState(false);
 
@@ -92,6 +93,7 @@ function Dashboard({ userId, userEmail }: { userId: string; userEmail: string })
         <SubscriptionsCard
           subscriptions={subscriptions}
           onAdd={addSubscription}
+          onUpdate={updateSubscription}
           onRemove={removeSubscription}
         />
 

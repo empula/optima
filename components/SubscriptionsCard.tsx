@@ -15,11 +15,13 @@ import FormattedNumberInput from "@/components/FormattedNumberInput";
 interface Props {
   subscriptions: Subscription[];
   onAdd: (sub: Omit<Subscription, "id" | "createdAt">) => Promise<void>;
+  onUpdate: (id: string, sub: Omit<Subscription, "id" | "createdAt">) => Promise<void>;
   onRemove: (id: string) => void;
 }
 
-export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Props) {
+export default function SubscriptionsCard({ subscriptions, onAdd, onUpdate, onRemove }: Props) {
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
@@ -34,6 +36,36 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
     (a, b) => nominalMonthlyPrice(b) - nominalMonthlyPrice(a)
   );
 
+  function resetForm() {
+    setEditingId(null);
+    setName("");
+    setPrice("");
+    setCycle("monthly");
+    setInstallmentMonths("");
+    setPaymentMethod("");
+    setErrorMessage("");
+  }
+
+  function startAdd() {
+    if (showForm && editingId === null) {
+      setShowForm(false);
+      return;
+    }
+    resetForm();
+    setShowForm(true);
+  }
+
+  function startEdit(sub: Subscription) {
+    setEditingId(sub.id);
+    setName(sub.name);
+    setPrice(String(sub.price));
+    setCycle(sub.cycle);
+    setInstallmentMonths(sub.installmentMonths ? String(sub.installmentMonths) : "");
+    setPaymentMethod(sub.paymentMethod ?? "");
+    setErrorMessage("");
+    setShowForm(true);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const parsedPrice = Number(price);
@@ -42,22 +74,23 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
     const parsedMonths = Number(installmentMonths);
     if (cycle === "installment" && (!parsedMonths || parsedMonths <= 0)) return;
 
+    const payload = {
+      name: name.trim(),
+      price: parsedPrice,
+      cycle,
+      paymentMethod: paymentMethod.trim() || undefined,
+      installmentMonths: cycle === "installment" ? parsedMonths : undefined,
+    };
+
     setSaving(true);
     setErrorMessage("");
     try {
-      await onAdd({
-        name: name.trim(),
-        price: parsedPrice,
-        cycle,
-        paymentMethod: paymentMethod.trim() || undefined,
-        installmentMonths: cycle === "installment" ? parsedMonths : undefined,
-      });
-
-      setName("");
-      setPrice("");
-      setCycle("monthly");
-      setInstallmentMonths("");
-      setPaymentMethod("");
+      if (editingId) {
+        await onUpdate(editingId, payload);
+      } else {
+        await onAdd(payload);
+      }
+      resetForm();
       setShowForm(false);
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : "Kaydedilemedi, tekrar dener misin?");
@@ -77,7 +110,7 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
           {formatCurrency(total)} <span className="text-lg text-[var(--text-muted)]">TL</span>
         </h2>
         <button
-          onClick={() => setShowForm((v) => !v)}
+          onClick={startAdd}
           className="text-xs bg-[var(--cta-bg)] text-[var(--cta-text)] px-3 py-1.5 rounded-full font-medium hover:opacity-90"
         >
           {showForm ? "Vazgeç" : "Ekle"}
@@ -135,7 +168,7 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
             disabled={saving}
             className="w-full bg-[var(--cta-bg)] text-[var(--cta-text)] rounded-lg py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50"
           >
-            {saving ? "Kaydediliyor..." : "Kaydet"}
+            {saving ? "Kaydediliyor..." : editingId ? "Güncelle" : "Kaydet"}
           </button>
           {errorMessage && (
             <p className="text-sm text-[var(--danger)] text-center">{errorMessage}</p>
@@ -170,6 +203,16 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
                       <span className="text-[var(--text-faint)]">/ay</span>
                     )}
                   </span>
+                  <button
+                    onClick={() => startEdit(sub)}
+                    aria-label={`${sub.name} kalemini düzenle`}
+                    className="text-[var(--text-faint)] hover:text-[var(--text-primary)] transition-colors"
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 20h9" />
+                      <path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+                    </svg>
+                  </button>
                   <button
                     onClick={() => onRemove(sub.id)}
                     aria-label={`${sub.name} kalemini sil`}
