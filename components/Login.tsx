@@ -58,10 +58,35 @@ export default function Login() {
       </div>
       <div className="flex-1 flex items-center justify-center">
         <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
-          <div className="text-center space-y-1 mb-2">
+          <div className="text-center space-y-2 mb-2">
             <h1 className="text-2xl font-semibold tracking-tight">Tally</h1>
-            <p className="text-sm text-[var(--text-muted)]">Devam etmek için e-postanı gir</p>
+            <p className="text-sm text-[var(--text-muted)] max-w-xs mx-auto">
+              Aboneliklerinin ne kadar tuttuğunu gör, kısa seanslarla odaklanma sürene sahip çık.
+            </p>
           </div>
+
+          <div className="space-y-3 py-2">
+            <div className="flex items-start gap-3">
+              <span className="text-base leading-none mt-0.5" aria-hidden="true">
+                💳
+              </span>
+              <p className="text-sm text-[var(--text-muted)] text-left">
+                Aboneliklerini ekle, aylık ne kadar gittiğini tek ekranda gör
+              </p>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="text-base leading-none mt-0.5" aria-hidden="true">
+                ⏱️
+              </span>
+              <p className="text-sm text-[var(--text-muted)] text-left">
+                25 dakikalık odaklanma seanslarıyla zamanına sahip çık
+              </p>
+            </div>
+          </div>
+
+          <p className="text-sm text-[var(--text-muted)] text-center">
+            Devam etmek için e-postanı gir
+          </p>
           <input
             type="email"
             required
