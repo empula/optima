@@ -35,19 +35,6 @@ export function monthlyTotal(subs: Subscription[]): number {
   return subs.reduce((sum, sub) => sum + monthlyPrice(sub), 0);
 }
 
-// Payment day = the day of month the expense was added. Fires every month
-// (or every year, for yearly plans) on that same day.
-export function isDueToday(sub: Subscription): boolean {
-  if (sub.cycle === "installment" && isInstallmentFinished(sub)) return false;
-
-  const start = new Date(sub.createdAt);
-  const now = new Date();
-  const sameDay = now.getDate() === start.getDate();
-
-  if (sub.cycle === "yearly") return sameDay && now.getMonth() === start.getMonth();
-  return sameDay;
-}
-
 export interface PaymentMethodTotal {
   method: string;
   total: number;
