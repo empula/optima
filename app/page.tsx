@@ -37,9 +37,12 @@ function Dashboard({ userId, userEmail }: { userId: string; userEmail: string })
     <div className="min-h-screen bg-[var(--app-bg)] text-[var(--text-primary)] p-6 font-sans transition-colors">
       <header className="max-w-md mx-auto mb-8 pt-4 flex items-center justify-between">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--text-faint)]">
-            Anıl Kalafat
-          </p>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full border-2 border-[var(--accent)]" />
+            <span className="text-sm font-semibold tracking-tight text-[var(--text-primary)]">
+              Optima
+            </span>
+          </div>
           <h1 className="text-xl font-medium tracking-tight text-[var(--text-muted)] mt-1">
             Özet
           </h1>

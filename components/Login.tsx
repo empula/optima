@@ -28,9 +28,12 @@ export default function Login() {
   if (status === "sent") {
     return (
       <div className="min-h-screen flex flex-col bg-[var(--app-bg)] text-[var(--text-primary)] p-6">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--text-faint)]">
-          Anıl Kalafat
-        </p>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full border-2 border-[var(--accent)]" />
+          <span className="text-sm font-semibold tracking-tight text-[var(--text-primary)]">
+            Optima
+          </span>
+        </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="max-w-sm text-center space-y-2">
             <p className="text-lg font-medium">E-postanı kontrol et</p>
@@ -47,9 +50,12 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--app-bg)] text-[var(--text-primary)] p-6">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--text-faint)]">
-        Anıl Kalafat
-      </p>
+      <div className="flex items-center gap-1.5">
+        <span className="w-2.5 h-2.5 rounded-full border-2 border-[var(--accent)]" />
+        <span className="text-sm font-semibold tracking-tight text-[var(--text-primary)]">
+          Optima
+        </span>
+      </div>
       <div className="flex-1 flex items-center justify-center">
         <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
           <div className="text-center space-y-1 mb-2">
