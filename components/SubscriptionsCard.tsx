@@ -3,8 +3,8 @@
 import { useState } from "react";
 import type { Subscription, BillingCycle } from "@/lib/types";
 import {
-  monthlyPrice,
   monthlyTotal,
+  nominalMonthlyPrice,
   groupByPaymentMethod,
   installmentsRemaining,
   isInstallmentFinished,
@@ -29,6 +29,9 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
 
   const total = monthlyTotal(subscriptions);
   const byPaymentMethod = groupByPaymentMethod(subscriptions);
+  const sortedSubscriptions = [...subscriptions].sort(
+    (a, b) => nominalMonthlyPrice(b) - nominalMonthlyPrice(a)
+  );
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -65,7 +68,7 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
   return (
     <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 hover:border-[var(--card-border-hover)] transition-colors">
       <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
-        Aylık Abonelikler
+        Aylık Giderler
       </p>
 
       <div className="flex items-baseline justify-between mt-2">
@@ -89,7 +92,7 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
             autoFocus
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Abonelik adı (örn. Netflix)"
+            placeholder="Gider adı (örn. Netflix, Ayakkabı)"
             className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg px-3 py-2 text-sm placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[var(--input-border-focus)]"
           />
           <div className="flex gap-2">
@@ -99,7 +102,7 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
               type="number"
               min="0"
               step="0.01"
-              placeholder="Fiyat"
+              placeholder={cycle === "installment" ? "Toplam tutar" : "Fiyat"}
               className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-lg px-3 py-2 text-sm placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[var(--input-border-focus)]"
             />
             <select
@@ -142,9 +145,9 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
         </form>
       )}
 
-      {subscriptions.length > 0 && (
+      {sortedSubscriptions.length > 0 && (
         <div className="mt-4 text-xs text-[var(--text-muted)] space-y-2 border-t border-[var(--card-border)] pt-3">
-          {subscriptions.map((sub) => {
+          {sortedSubscriptions.map((sub) => {
             const remaining = installmentsRemaining(sub);
             const finished = isInstallmentFinished(sub);
             return (
@@ -164,14 +167,14 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onRemove }: Pr
                 </div>
                 <div className="flex items-center gap-2 pt-px">
                   <span className={finished ? "text-[var(--text-faint)] line-through" : undefined}>
-                    {formatCurrency(monthlyPrice(sub) || sub.price)} TL
+                    {formatCurrency(nominalMonthlyPrice(sub))} TL
                     {sub.cycle === "yearly" && (
                       <span className="text-[var(--text-faint)]">/ay</span>
                     )}
                   </span>
                   <button
                     onClick={() => onRemove(sub.id)}
-                    aria-label={`${sub.name} aboneliğini sil`}
+                    aria-label={`${sub.name} kalemini sil`}
                     className="text-[var(--text-faint)] hover:text-[var(--danger)] transition-colors"
                   >
                     ✕

@@ -18,10 +18,17 @@ export function isInstallmentFinished(sub: Subscription): boolean {
   return installmentsRemaining(sub) === 0;
 }
 
-export function monthlyPrice(sub: Subscription): number {
+// The nominal monthly rate, regardless of whether an installment plan has finished.
+// Used for display purposes so a finished installment still shows what it used to cost.
+export function nominalMonthlyPrice(sub: Subscription): number {
   if (sub.cycle === "yearly") return sub.price / 12;
-  if (sub.cycle === "installment" && isInstallmentFinished(sub)) return 0;
+  if (sub.cycle === "installment") return sub.price / (sub.installmentMonths ?? 1);
   return sub.price;
+}
+
+export function monthlyPrice(sub: Subscription): number {
+  if (sub.cycle === "installment" && isInstallmentFinished(sub)) return 0;
+  return nominalMonthlyPrice(sub);
 }
 
 export function monthlyTotal(subs: Subscription[]): number {

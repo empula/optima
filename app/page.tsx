@@ -11,6 +11,7 @@ import SubscriptionsCard from "@/components/SubscriptionsCard";
 import FocusCard from "@/components/FocusCard";
 import InsightCard from "@/components/InsightCard";
 import ThemeToggle from "@/components/ThemeToggle";
+import Clock from "@/components/Clock";
 import Login from "@/components/Login";
 import Footer from "@/components/Footer";
 
@@ -52,19 +53,22 @@ function Dashboard({ userId, userEmail }: { userId: string; userEmail: string })
           </h1>
           <p className="text-xs text-[var(--text-faint)] mt-0.5">{userEmail}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <button
-            onClick={() => signOut()}
-            aria-label="Çıkış yap"
-            className="w-9 h-9 flex items-center justify-center rounded-full border border-[var(--card-border)] bg-[var(--card-bg)] text-[var(--text-muted)] hover:border-[var(--card-border-hover)] transition-colors"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-              <path d="M16 17l5-5-5-5" />
-              <path d="M21 12H9" />
-            </svg>
-          </button>
+        <div className="flex flex-col items-end gap-2">
+          <Clock />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => signOut()}
+              aria-label="Çıkış yap"
+              className="w-9 h-9 flex items-center justify-center rounded-full border border-[var(--card-border)] bg-[var(--card-bg)] text-[var(--text-muted)] hover:border-[var(--card-border-hover)] transition-colors"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                <path d="M16 17l5-5-5-5" />
+                <path d="M21 12H9" />
+              </svg>
+            </button>
+          </div>
         </div>
       </header>
 
