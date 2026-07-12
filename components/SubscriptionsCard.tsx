@@ -11,6 +11,7 @@ import {
   formatCurrency,
 } from "@/lib/finance";
 import FormattedNumberInput from "@/components/FormattedNumberInput";
+import AnimatedNumber from "@/components/AnimatedNumber";
 
 interface Props {
   subscriptions: Subscription[];
@@ -107,7 +108,7 @@ export default function SubscriptionsCard({ subscriptions, onAdd, onUpdate, onRe
 
       <div className="flex items-baseline justify-between mt-2">
         <h2 className="text-3xl font-semibold tracking-tight">
-          {formatCurrency(total)} <span className="text-lg text-[var(--text-muted)]">TL</span>
+          <AnimatedNumber value={total} /> <span className="text-lg text-[var(--text-muted)]">TL</span>
         </h2>
         <button
           onClick={startAdd}

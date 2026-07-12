@@ -32,6 +32,7 @@ export function nominalMonthlyPrice(sub: Subscription): number {
 }
 
 export function monthlyPriceAt(sub: Subscription, at: Date): number {
+  if (monthsBetween(sub.createdAt, at) < 0) return 0; // didn't exist yet
   if (sub.cycle === "installment" && isInstallmentFinishedAt(sub, at)) return 0;
   return nominalMonthlyPrice(sub);
 }

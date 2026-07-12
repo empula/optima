@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useAuth } from "@/lib/useAuth";
 import { useSubscriptions } from "@/lib/useSubscriptions";
 import { useMonthlyIncome } from "@/lib/useMonthlyIncome";
@@ -8,11 +9,11 @@ import { monthlyTotal } from "@/lib/finance";
 import { signOut } from "@/lib/auth";
 import NetIncomeCard from "@/components/NetIncomeCard";
 import SubscriptionsCard from "@/components/SubscriptionsCard";
+import TrendChart from "@/components/TrendChart";
 import InsightCard from "@/components/InsightCard";
 import ThemeToggle from "@/components/ThemeToggle";
 import Clock from "@/components/Clock";
 import Login from "@/components/Login";
-import Footer from "@/components/Footer";
 import ProjectionModal from "@/components/ProjectionModal";
 
 export default function Page() {
@@ -84,23 +85,40 @@ function Dashboard({ userId, userEmail }: { userId: string; userEmail: string })
       </header>
 
       <main className="max-w-md mx-auto space-y-4">
-        <NetIncomeCard
-          income={income}
-          expenses={monthlyTotal(subscriptions)}
-          onUpdateIncome={updateIncome}
-        />
+        <div className="animate-card-in" style={{ animationDelay: "0ms" }}>
+          <NetIncomeCard
+            income={income}
+            expenses={monthlyTotal(subscriptions)}
+            onUpdateIncome={updateIncome}
+          />
+        </div>
 
-        <SubscriptionsCard
-          subscriptions={subscriptions}
-          onAdd={addSubscription}
-          onUpdate={updateSubscription}
-          onRemove={removeSubscription}
-        />
+        <div className="animate-card-in" style={{ animationDelay: "60ms" }}>
+          <SubscriptionsCard
+            subscriptions={subscriptions}
+            onAdd={addSubscription}
+            onUpdate={updateSubscription}
+            onRemove={removeSubscription}
+          />
+        </div>
 
-        <InsightCard subscriptions={subscriptions} income={income} />
+        <div className="animate-card-in" style={{ animationDelay: "120ms" }}>
+          <TrendChart subscriptions={subscriptions} />
+        </div>
+
+        <div className="animate-card-in" style={{ animationDelay: "180ms" }}>
+          <InsightCard subscriptions={subscriptions} income={income} />
+        </div>
       </main>
 
-      <Footer />
+      <div className="text-center mt-8">
+        <Link
+          href="/hakkinda"
+          className="text-xs text-[var(--text-faint)] hover:text-[var(--text-muted)] transition-colors"
+        >
+          Hakkında
+        </Link>
+      </div>
 
       {showProjection && (
         <ProjectionModal

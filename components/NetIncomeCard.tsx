@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { formatCurrency } from "@/lib/finance";
 import FormattedNumberInput from "@/components/FormattedNumberInput";
+import RingMeter from "@/components/RingMeter";
+import AnimatedNumber from "@/components/AnimatedNumber";
 
 interface Props {
   income: number;
@@ -19,6 +21,18 @@ export default function NetIncomeCard({ income, expenses, onUpdateIncome }: Prop
   const net = income - expenses;
   const hasIncome = income > 0;
   const isNegative = hasIncome && net < 0;
+  const ratio = hasIncome ? expenses / income : 0;
+  const ratioPercent = ratio * 100;
+
+  const bandColor = !hasIncome
+    ? "var(--text-faint)"
+    : isNegative
+      ? "var(--danger)"
+      : ratio >= 0.75
+        ? "var(--status-serious)"
+        : ratio >= 0.5
+          ? "var(--status-warning)"
+          : "var(--status-good)";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -43,22 +57,32 @@ export default function NetIncomeCard({ income, expenses, onUpdateIncome }: Prop
         Net Durum
       </p>
 
-      <div className="flex items-baseline justify-between mt-2">
-        <h2
-          className={`text-3xl font-semibold tracking-tight ${
-            isNegative ? "text-[var(--danger)]" : ""
-          }`}
-        >
-          {hasIncome ? (
-            <>
-              {formatCurrency(net)} <span className="text-lg text-[var(--text-muted)]">TL</span>
-            </>
-          ) : (
-            <span className="text-lg text-[var(--text-muted)] font-normal">
-              Gelirini girince net kalanını görürsün
-            </span>
+      <div className="flex items-center justify-between mt-2 gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          {hasIncome && (
+            <RingMeter percent={ratioPercent} color={bandColor} size={60} strokeWidth={6}>
+              <span className="text-[10px] font-bold" style={{ color: bandColor }}>
+                %{Math.round(ratioPercent)}
+              </span>
+            </RingMeter>
           )}
-        </h2>
+          <h2
+            className={`text-3xl font-semibold tracking-tight ${
+              isNegative ? "text-[var(--danger)]" : ""
+            }`}
+          >
+            {hasIncome ? (
+              <>
+                <AnimatedNumber value={net} />{" "}
+                <span className="text-lg text-[var(--text-muted)] font-normal">TL</span>
+              </>
+            ) : (
+              <span className="text-base text-[var(--text-muted)] font-normal">
+                Gelirini girince net kalanını görürsün
+              </span>
+            )}
+          </h2>
+        </div>
         <button
           onClick={() => setEditing((v) => !v)}
           className="text-xs bg-[var(--cta-bg)] text-[var(--cta-text)] px-3 py-1.5 rounded-full font-medium hover:opacity-90 shrink-0"

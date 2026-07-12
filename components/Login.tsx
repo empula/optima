@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { signInWithGoogle } from "@/lib/auth";
-import Footer from "@/components/Footer";
 
 function GoogleIcon() {
   return (
@@ -92,7 +92,14 @@ export default function Login() {
           )}
         </div>
       </div>
-      <Footer />
+      <div className="text-center pb-2">
+        <Link
+          href="/hakkinda"
+          className="text-xs text-[var(--text-faint)] hover:text-[var(--text-muted)] transition-colors"
+        >
+          Hakkında
+        </Link>
+      </div>
     </div>
   );
 }
