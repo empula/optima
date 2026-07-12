@@ -66,7 +66,14 @@ export default function AboutPage() {
             </h2>
             <p>
               Bir hata bulursan ya da aklına iyi bir fikir gelirse, uygulamayı
-              geliştirmeye devam ediyoruz — geri bildirimlerin değerli.
+              geliştirmeye devam ediyoruz — geri bildirimlerin değerli.{" "}
+              <a
+                href="mailto:gettally@proton.me"
+                className="text-[var(--text-primary)] underline underline-offset-2 hover:text-[var(--accent)] transition-colors"
+              >
+                gettally@proton.me
+              </a>{" "}
+              adresine yazabilirsin.
             </p>
           </section>
         </div>
